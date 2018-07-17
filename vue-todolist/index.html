@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .container {
+            width: 850px;
+            padding: 10px 50px 20px 20px;
+            border: 1px #000 solid;
+        }
+        .todo-input {
+            width: 100%;
+            height: 30px;
+        }
+        .checkbox-panel {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <h2>小目标列表</h2>
+        <h3>添加小目标</h3>
+        <input placeholder="输入小目标，按回车确认" class="todo-input" @keyup.enter=""/>
+        <div>共有{{targetNum}}个小目标</div>
+        <div class="checkbox-panel">
+            <input name="target" type="radio"/>所有目标
+            <input name="target" type="radio"/>已完成目标
+            <input name="target" type="radio"/>未完成目标
+        </div>
+        <ul>
+            <li v-for="">
+                <input type="checkbox"/>
+                {{}}
+                <div class="">X</div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#container',
+
+    })
+</script>
+</html>
