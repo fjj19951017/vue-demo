@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShoppingCart</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.css"/>
+    <link href="./open-iconic-master/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+    <style>
+        th,td {
+            text-align: center;
+        }
+        .card {
+            margin: 200px auto;
+            width: 60%;
+        }
+        .card-header {
+            font-weight: bold;
+        }
+        .card-body {
+            padding: 0;
+        }
+        .card-footer {
+            position: relative;
+        }
+        .card-footer-left {
+            float: left;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+        .card-footer-right {
+            float: right;
+            margin-right: 200px;
+        }
+        .table {
+            margin: 0;
+        }
+        .input-group {
+            margin: 0 auto;
+            width: 150px;
+        }
+        .check-out {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100px;
+            text-align: center;
+            cursor: pointer;
+            line-height: 48px;
+            background: #ff7700;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="card" id="shopping-cart">
+    <div class="card-header">
+        购物车
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col"><input type="checkbox" @click="selectAll(ifSelectAll)" :checked="ifSelectAll"/>全选</th>
+                <th scope="col"></th>
+                <th scope="col">商品</th>
+                <th scope="col">数量</th>
+                <th scope="col">单价（元）</th>
+                <th scope="col">金额（元）</th>
+                <th scope="col">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item,index) in productList">
+                <td><input type="checkbox" @click="item.selected=!item.selected" :checked="item.selected"/></td>
+                <td><img :src="item.src"/></td>
+                <td>{{item.name}}</td>
+                <td>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button" @click="item.count == 0 ? '' : item.count--">-</button>
+                        </div>
+                        <input type="text" class="form-control" placeholder="0" v-model="item.count">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button" @click="item.count++">+</button>
+                        </div>
+                    </div>
+                </td>
+                <td>￥{{item.singlePrice}}</td>
+                <td>￥{{item.singlePrice * item.count}}</td>
+                <td><button class="btn btn-danger" @click="deleteSingleItem(index)">删除</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <div class="card-footer-left" @click="deleteSelectedItem">
+            <span class="oi oi-trash" title="trash"></span>
+            删除选中商品
+        </div>
+        <div class="card-footer-left">
+            <span class="oi oi-cart" title="cart"></span>
+            继续购物
+        </div>
+        <div class="check-out">去结算</div>
+        <div class="card-footer-right">{{getTotal.totalNum}}件商品总计（不含运费）：￥{{getTotal.totalPrice}}</div>
+    </div>
+
+</div>
+</body>
+<script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#shopping-cart',
+        data: {
+            productList: [
+                {
+                    name: '商品1',
+                    singlePrice: 700,
+                    src: '.png',
+                    count: 0,
+                    selected: false
+                },
+                {
+                    name: '商品2',
+                    singlePrice: 800,
+                    src: '.png',
+                    count: 0,
+                    selected: false
+                },
+                {
+                    name: '商品3',
+                    singlePrice: 900,
+                    src: '.png',
+                    count: 0,
+                    selected: false
+                }
+            ],
+        },
+        computed: {
+            //检测是否全选
+            ifSelectAll: function() {
+
+                return this.productList.length === 0 ? false : this.productList.every((item) => item.selected);
+            },
+            //获取总件数和总价
+            getTotal: function() {
+
+                let selectedProductList = this.productList.filter((item) => item.selected),
+                    totalPrice = 0,
+                    totalNum = 0;
+
+                selectedProductList.forEach(function(x) {
+                    totalPrice += x.singlePrice * x.count;
+                    if(x.count) {
+                        totalNum++;
+                    }
+                });
+                return {
+                    totalNum: totalNum,
+                    totalPrice: totalPrice
+                }
+            }
+        },
+        methods: {
+            //删除单条数据
+            deleteSingleItem: function(index) {
+                this.productList.splice(index, 1);
+            },
+            //全选功能
+            selectAll: function(isSelectAll) {
+                this.productList.forEach((x) => {
+                    x.selected = !isSelectAll;
+                })
+            },
+            //删除选中的数据
+            deleteSelectedItem: function() {
+                this.productList = this.productList.filter((item) => !item.selected);
+            }
+        }
+    })
+</script>
+</html>
